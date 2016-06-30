@@ -8,17 +8,17 @@
 # Licencia: GPL
 
 Dado /^que se necesita una se necesita una poblacion de cromosomas de (.+?) filas, se crea uno.$/  do |filas|
-  @cromosoma = Cromosoma.new(filas.to_i)
+  @cromosoma = Cromosoma.new(filas.to_i, false)
 end
 
 
 Cuando /^miro los valores de todos los genes$/ do
-  @plataQueHay = @cuentaBancaria.cuandoDineroHay
+  @diferentes = @cromosoma.sonDiferentesGenes
 end
 
 
-Entonces /^debe decir que hay (.+?) pesos$/ do |cuantosPesos|
-  expect(@plataQueHay).to eq cuantosPesos.to_i
+Entonces /^debe decir que todos los genes han tomado distintos valores.$/ do
+  expect(@diferentes).to eq true 
 end
 
 

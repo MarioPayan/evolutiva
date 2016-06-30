@@ -73,4 +73,17 @@ class Cromosoma
   		puts fila.join(',')
   	end
   end
+  
+  def sonDiferentesGenes #True si toman distintos valores los genes, False si no
+    test = Array.new(getTamano)
+    @genes.each do |val|
+      print val
+      if test[val]==nil
+        test[val] = 1
+      else
+        return false
+      end
+    end
+    return true
+  end
 end
