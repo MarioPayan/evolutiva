@@ -13,6 +13,7 @@ class Cromosoma
     end
     puts "Mutando:    #{@genes.at(random1)} en #{random1+1} -> #{@genes.at(random2)} en #{random2+1}" if @debug
     @genes[random1], @genes[random2] = @genes[random2], @genes[random1] #Intercambia de lugar dos genes en las posiciones escogidas por los random
+    return self
   end
   
   def cruzar(cromosoma1, cromosoma2)
