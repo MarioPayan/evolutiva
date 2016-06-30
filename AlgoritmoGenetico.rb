@@ -77,6 +77,7 @@ class AlgoritmoGenetico < Array #La clase extiende de un Array
 	end
 end
 
-a = AlgoritmoGenetico.new(4000,8,false) #La tercera variable permite ver en detalle el procedimiento
+a = AlgoritmoGenetico.new(400,8,false) #La tercera variable permite ver en detalle el procedimiento
 a.generacionar
 a.printGeneracion
+a[0].cruzar(a[0],a[1]) #Ejemplo de cruce (activar el debug)
