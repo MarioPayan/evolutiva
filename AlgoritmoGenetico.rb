@@ -69,16 +69,16 @@ class AlgoritmoGenetico < Array #La clase extiende de un Array
   end
 
 	def generacionar #Ejecuta el programa para una sola generacion
-	cromosomasInicialesCount = self.length #Contador que permite recorrer solo los elementos de la generacion antes de ejecutar el ciclo
+		cromosomasInicialesCount = self.length #Contador que permite recorrer solo los elementos de la generacion antes de ejecutar el ciclo
 		self.each_with_index do |cromosoma, index| #Por cada cromosoma de la generacion
 			cromosomasInicialesCount = cromosomasInicialesCount-1 #Contador
 			puts "----------Soy una barrita separadora :D---------------" if @debug
 			cromosoma.printGenes if @debug #Obtiene los genes de determinado cromosoma
 			cromosomaMutado = cromosoma.mutar #Crea una copia del cromosoma actual y lo muta
 			cromosomaMutado.setAptitud(self.validar(cromosomaMutado)) #Evalua la aptitud del cromosoma
-			
-			self[index] = cromosomaMutado #Reemplaza siempre el padre por el hijo hasta que definamos la aptitud
-			
+			if cromosomaMutado.getAptitud > cromosoma.getAptitud #Si la aptitud del cromosoma mutado es mayor que la del cromosoma
+				self[index] = cromosomaMutado #Reemplaza el padre por el hijo 
+			end
 			cromosoma.printGenes if @debug #Obtiene los genes de determinado cromosoma
 			cromosoma.printTablero if @debug #Obtiene el tablero representado por determinado cromosoma
 			cromosoma.setAptitud(self.validar(cromosoma)) #Almacena la funcion de aptitud calculada para... ya saben
@@ -113,4 +113,4 @@ end
 a = AlgoritmoGenetico.new(2,8,true) #La tercera variable permite ver en detalle el procedimiento
 a.generacionar
 a.printGeneracion
-a.cruzar(a[0],a[1]) #Ejemplo de cruce
+a.cruzar(a[0],a[1]) #Ejemplo de cruce (Activar el debug)
