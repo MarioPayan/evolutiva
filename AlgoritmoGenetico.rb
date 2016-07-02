@@ -41,6 +41,32 @@ class AlgoritmoGenetico < Array #La clase extiende de un Array
 		end
 		return aptitud #Retorna la aptitud
 	end
+	
+	def cruzar(cromosoma1, cromosoma2)
+    tamano = cromosoma1.getTamano #Obtiene el tamano de un cromosoma cualquiera
+    mascaraCruce = [] #Crea la mascara de cruce (permite saber de que cromosoma sera tomado cada gen)
+    tamano.times do #Ciclo tantas veces como genes en el cromosoma hallan
+    	mascaraCruce.push(rand(2)) #Asigna un numero aleatorio entre 0 y 1 en la masacara (porque son dos padres solamente)
+    end
+    if @debug
+    	puts "Mascara de cruce:  #{mascaraCruce.join(",")}" 
+    	puts "Cromosoma1:"
+    	cromosoma1.printGenes
+    	puts "Cromosoma2:"
+    	cromosoma2.printGenes
+    end
+    cromosomaTMP = Cromosoma.new(tamano-1, @debug) #Crea un cromosoma temporal con genes aleatorios
+    tamano.times do |posicion| #Ciclo tantas veces como genes en el cromosoma hallan
+    	if mascaraCruce.at(posicion)==0 #Si la mascara esta en 0, toma un gen del cromosoma 1
+        	cromosomaTMP.setGen(posicion, cromosoma1.getGen(posicion)) #Lo asigna al cromosoma temporal
+    	else #Si la mascara esta en 1, toma un gen del cromosoma 2
+        	cromosomaTMP.setGen(posicion, cromosoma2.getGen(posicion)) #Lo asigna al cromosoma temproal
+    	end
+    end
+    puts "Cromosoma hijo:" if @debug
+    cromosomaTMP.printGenes if @debug
+    return cromosomaTMP
+  end
 
 	def generacionar #Ejecuta el programa para una sola generacion
 	cromosomasInicialesCount = self.length #Contador que permite recorrer solo los elementos de la generacion antes de ejecutar el ciclo
@@ -48,7 +74,7 @@ class AlgoritmoGenetico < Array #La clase extiende de un Array
 			cromosomasInicialesCount = cromosomasInicialesCount-1 #Contador
 			puts "----------Soy una barrita separadora :D---------------" if @debug
 			cromosoma.printGenes if @debug #Obtiene los genes de determinado cromosoma
-			cromosomaMutado = Marshal.load(Marshal.dump(cromosoma)).mutar #Crea una copia del cromosoma actual y lo muta
+			cromosomaMutado = cromosoma.mutar #Crea una copia del cromosoma actual y lo muta
 			cromosomaMutado.setAptitud(self.validar(cromosomaMutado)) #Evalua la aptitud del cromosoma
 			
 			self[index] = cromosomaMutado #Reemplaza siempre el padre por el hijo hasta que definamos la aptitud
@@ -84,7 +110,7 @@ class AlgoritmoGenetico < Array #La clase extiende de un Array
 	end
 end
 
-a = AlgoritmoGenetico.new(2,4,true) #La tercera variable permite ver en detalle el procedimiento
+a = AlgoritmoGenetico.new(2,8,true) #La tercera variable permite ver en detalle el procedimiento
 a.generacionar
 a.printGeneracion
-a[0].cruzar(a[0],a[1]) #Ejemplo de cruce (activar el debug)
+a.cruzar(a[0],a[1]) #Ejemplo de cruce

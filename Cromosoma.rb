@@ -11,36 +11,15 @@ class Cromosoma
     	random1 = rand(@genes.length) #Genera un numero aleatorio para un random
     	random2 = rand(@genes.length) #Lo mismo, para el otro random
     end
+    cromosomaMutado = Marshal.load(Marshal.dump(self))
     puts "Mutando:    #{@genes.at(random1)} en #{random1+1} -> #{@genes.at(random2)} en #{random2+1}" if @debug
     @genes[random1], @genes[random2] = @genes[random2], @genes[random1] #Intercambia de lugar dos genes en las posiciones escogidas por los random
-    return self
+    cromosomaMutado.setGen(random1, @genes[random2])
+    cromosomaMutado.setGen(random2, @genes[random1])
+    return cromosomaMutado
   end
   
-  def cruzar(cromosoma1, cromosoma2)
-    tamano = getTamano #Obtiene el tamano de un cromosoma cualquiera
-    mascaraCruce = [] #Crea la mascara de cruce (permite saber de que cromosoma sera tomado cada gen)
-    tamano.times do #Ciclo tantas veces como genes en el cromosoma hallan
-      mascaraCruce.push(rand(2)) #Asigna un numero aleatorio entre 0 y 1 en la masacara (porque son dos padres solamente)
-    end
-    if @debug
-      puts "Mascara de cruce:  #{mascaraCruce.join(",")}" 
-      puts "Cromosoma1:"
-      cromosoma1.printGenes
-      puts "Cromosoma2:"
-      cromosoma2.printGenes
-    end
-    cromosomaTMP = Cromosoma.new(tamano-1, @debug) #Crea un cromosoma temporal con genes aleatorios
-    tamano.times do |posicion| #Ciclo tantas veces como genes en el cromosoma hallan
-      if mascaraCruce.at(posicion)==0 #Si la mascara esta en 0, toma un gen del cromosoma 1
-        cromosomaTMP.setGen(posicion, cromosoma1.getGen(posicion)) #Lo asigna al cromosoma temporal
-      else #Si la mascara esta en 1, toma un gen del cromosoma 2
-        cromosomaTMP.setGen(posicion, cromosoma2.getGen(posicion)) #Lo asigna al cromosoma temproal
-      end
-    end
-    puts "Cromosoma hijo:" if @debug
-    cromosomaTMP.printGenes if @debug
-    return cromosomaTMP
-  end
+  
 
   def getGen(posicion) #Retorna un gen en determinada posicion del cromosoma
   	return @genes[posicion]
@@ -87,4 +66,15 @@ class Cromosoma
     end
     return true
   end
+end
+
+actual = Cromosoma.new(8, false)
+expected = actual.mutar
+
+puts actual.printGenes
+puts expected.printGenes
+if actual.eql?(expected)
+  print "paso"
+else
+  print "no paso"
 end
