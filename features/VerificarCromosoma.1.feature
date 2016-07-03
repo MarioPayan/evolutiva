@@ -11,7 +11,7 @@
 Característica: Evaluar cada cromosoma, para verificar que funciona.
 
   Antecedentes: Crear un cromosoma
-    Dado que se necesita una poblacion de cromosomas de 8 filas, se crea uno.
+    Dado que se necesita una se necesita una poblacion de cromosomas de 8 filas, se crea uno.
     
 #  -  Que al crear un Cromosoma tenga sus genes distintos.
   Escenario: Verificar que todos los genes sean distintos
@@ -21,7 +21,13 @@ Característica: Evaluar cada cromosoma, para verificar que funciona.
 #  -  Que funcione la mutación. Hay varias formas para ello. No hace falta ser exhaustivo.
   Escenario: Mutacion
     Cuando muto un cromosoma
-    Y miro los valores de todos los genes 
+    Y miro los valores de todos los genes del hijo
     Entonces debe decir que todos los genes han tomado distintos valores.
-    Y el primer cromosoma debe ser distinto del segundo en sus genes.
+    Y el cromosoma padre debe ser distinto del hijo en sus genes.
+
+#-  Que funcione el cruce uniforme. Hay varias formas para ello. No hace falta ser exhaustivo.
+  Escenario: Cruce
+    Cuando cruzo un cromosoma con otro
+    Y miro los valores de todos los genes del hijo y de sus padres
+    Y el cromosoma hijo debe ser una combinacion de sus padres.
 

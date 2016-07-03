@@ -2,6 +2,7 @@ load 'Cromosoma.rb'
 
 class AlgoritmoGenetico < Array #La clase extiende de un Array
 	def initialize(numeroPoblacion, numeroGenes, debug) #Constructor, recibe dos numeros, el tamano de la poblacion y el numero de genes de cada cromosoma
+		@numeroGenes = numeroGenes
 		@debug = debug #Es una variable temporal nueva para mostrar o no en consola los resultados
 		@numeroMaximoChoques = (numeroGenes*(numeroGenes-1))/2 #Define el numero maximo de choques posibles
 		numeroPoblacion.times do |cromosoma| #Entra a un ciclo que se ejecuta tantas veces como miembros en la poblacion haya
@@ -26,47 +27,23 @@ class AlgoritmoGenetico < Array #La clase extiende de un Array
 		diagonal2 = Array.new() #Conjuntos de subdiagonales en la otra direccion
 		for i in 0..cromosoma.getTamano-1 #Ciclo for de 0 hasta el tamano del tablero
 			diagonal1.push(i+cromosoma.getGen(i)) #Identifica la subdiagonal y la agrega a su correspondiente diagonal
-			diagonal2.push(3-i+cromosoma.getGen(i)) #Identifica la subdiagonal y la agrega a su correspondiente diagonal
+			diagonal2.push(@numeroGenes-i+cromosoma.getGen(i)) #Identifica la subdiagonal y la agrega a su correspondiente diagonal
 		end
 		choques = self.triangular(diagonal1) + self.triangular(diagonal2) #Triangula los choques
-		aptitud = (choques + 0.0)/@numeroMaximoChoques #Normaliza en (0 - 1) la aptitud
 		if @debug
 			puts "Diagonales:"
 			puts diagonal1.join(',')
 			puts diagonal2.join(',')
 			puts "Choques: "
 			puts choques
-			puts "Aptitud: "
-			puts aptitud
 		end
-		return aptitud #Retorna la aptitud
+		return  choques #Retorna la cantidad de choques
 	end
 	
-	def cruzar(cromosoma1, cromosoma2)
-    tamano = cromosoma1.getTamano #Obtiene el tamano de un cromosoma cualquiera
-    mascaraCruce = [] #Crea la mascara de cruce (permite saber de que cromosoma sera tomado cada gen)
-    tamano.times do #Ciclo tantas veces como genes en el cromosoma hallan
-    	mascaraCruce.push(rand(2)) #Asigna un numero aleatorio entre 0 y 1 en la masacara (porque son dos padres solamente)
-    end
-    if @debug
-    	puts "Mascara de cruce:  #{mascaraCruce.join(",")}" 
-    	puts "Cromosoma1:"
-    	cromosoma1.printGenes
-    	puts "Cromosoma2:"
-    	cromosoma2.printGenes
-    end
-    cromosomaTMP = Cromosoma.new(tamano-1, @debug) #Crea un cromosoma temporal con genes aleatorios
-    tamano.times do |posicion| #Ciclo tantas veces como genes en el cromosoma hallan
-    	if mascaraCruce.at(posicion)==0 #Si la mascara esta en 0, toma un gen del cromosoma 1
-        	cromosomaTMP.setGen(posicion, cromosoma1.getGen(posicion)) #Lo asigna al cromosoma temporal
-    	else #Si la mascara esta en 1, toma un gen del cromosoma 2
-        	cromosomaTMP.setGen(posicion, cromosoma2.getGen(posicion)) #Lo asigna al cromosoma temproal
-    	end
-    end
-    puts "Cromosoma hijo:" if @debug
-    cromosomaTMP.printGenes if @debug
-    return cromosomaTMP
-  end
+	def calcularAptitud(choques) #normaliza el numero de choques
+		aptitud = (choques + 0.0)/@numeroMaximoChoques #Normaliza en (0 - 1) la aptitud
+		return aptitud
+	end
 
 	def generacionar #Ejecuta el programa para una sola generacion
 		cromosomasInicialesCount = self.length #Contador que permite recorrer solo los elementos de la generacion antes de ejecutar el ciclo
@@ -75,13 +52,13 @@ class AlgoritmoGenetico < Array #La clase extiende de un Array
 			puts "----------Soy una barrita separadora :D---------------" if @debug
 			cromosoma.printGenes if @debug #Obtiene los genes de determinado cromosoma
 			cromosomaMutado = cromosoma.mutar #Crea una copia del cromosoma actual y lo muta
-			cromosomaMutado.setAptitud(self.validar(cromosomaMutado)) #Evalua la aptitud del cromosoma
+			cromosomaMutado.setAptitud( calcularAptitud( self.validar(cromosomaMutado) ) ) #Evalua la aptitud del cromosoma
 			if cromosomaMutado.getAptitud > cromosoma.getAptitud #Si la aptitud del cromosoma mutado es mayor que la del cromosoma
 				self[index] = cromosomaMutado #Reemplaza el padre por el hijo 
 			end
 			cromosoma.printGenes if @debug #Obtiene los genes de determinado cromosoma
 			cromosoma.printTablero if @debug #Obtiene el tablero representado por determinado cromosoma
-			cromosoma.setAptitud(self.validar(cromosoma)) #Almacena la funcion de aptitud calculada para... ya saben
+			cromosoma.setAptitud( calcularAptitud( self.validar(cromosoma) ) ) #Almacena la funcion de aptitud calculada para... ya saben
 			puts if @debug #Salto de linea
 			break if cromosomasInicialesCount==0 #Si ya se termino la generacion que habia inicialmente, finaliza
 		end
@@ -110,7 +87,8 @@ class AlgoritmoGenetico < Array #La clase extiende de un Array
 	end
 end
 
-a = AlgoritmoGenetico.new(2,8,true) #La tercera variable permite ver en detalle el procedimiento
+a = AlgoritmoGenetico.new(100,6,true) #La tercera variable permite ver en detalle el procedimiento
 a.generacionar
 a.printGeneracion
-a.cruzar(a[0],a[1]) #Ejemplo de cruce (Activar el debug)
+puts puts puts
+a[0].cruzar(a[1]) #Ejemplo de cruce (Activar el debug)
