@@ -11,7 +11,7 @@
 Característica: Evaluar correctamente los ataques entre Reinas de un Cromosoma.
 
   Antecedentes: Crear un cromosoma y un algoritmo genetico 
-    Dado que se necesita una se necesita un cromosoma y un algoritmo genetico, se crea un cromosoma de 5 filas y el algoritmo genetico.
+    Dado que se necesita un cromosoma y un algoritmo genetico, se crea un cromosoma de 5 filas y el algoritmo genetico.
     
 #  Evaluar choque en diagonal secundaria
   Escenario: Un conflicto en diagonal 5 y 3 y 8

@@ -1,8 +1,12 @@
 load 'Cromosoma.rb'
 
 class AlgoritmoGenetico < Array #La clase extiende de un Array
-	def initialize(numeroPoblacion, numeroGenes, debug) #Constructor, recibe dos numeros, el tamano de la poblacion y el numero de genes de cada cromosoma
+	def initialize(numeroPoblacion, numeroGenes, debug, temperatura=100) #Constructor, recibe dos numeros, el tamano de la poblacion y el numero de genes de cada cromosoma
 		@numeroGenes = numeroGenes
+		@temperaturaInicial = temperatura
+		@temperatura = temperatura
+		@beta = 0.02
+		@superRandom = Random.new
 		@debug = debug #Es una variable temporal nueva para mostrar o no en consola los resultados
 		@numeroMaximoChoques = (numeroGenes*(numeroGenes-1))/2 #Define el numero maximo de choques posibles
 		numeroPoblacion.times do |cromosoma| #Entra a un ciclo que se ejecuta tantas veces como miembros en la poblacion haya
@@ -42,6 +46,7 @@ class AlgoritmoGenetico < Array #La clase extiende de un Array
 	
 	def calcularAptitud(choques) #normaliza el numero de choques
 		aptitud = (choques + 0.0)/@numeroMaximoChoques #Normaliza en (0 - 1) la aptitud
+		aptitud = (1 - aptitud).abs
 		return aptitud
 	end
 
@@ -55,23 +60,31 @@ class AlgoritmoGenetico < Array #La clase extiende de un Array
 			cromosomaMutado.setAptitud( calcularAptitud( self.validar(cromosomaMutado) ) ) #Evalua la aptitud del cromosoma
 			if cromosomaMutado.getAptitud > cromosoma.getAptitud #Si la aptitud del cromosoma mutado es mayor que la del cromosoma
 				self[index] = cromosomaMutado #Reemplaza el padre por el hijo 
+			else
+				
+				if @superRandom.rand(1.0) < Math::E**((cromosoma.getAptitud - cromosomaMutado.getAptitud)/@temperatura) #euler
+					self[index] = cromosomaMutado #Reemplaza el padre por el hijo
+				end
 			end
 			cromosoma.printGenes if @debug #Obtiene los genes de determinado cromosoma
 			cromosoma.printTablero if @debug #Obtiene el tablero representado por determinado cromosoma
 			cromosoma.setAptitud( calcularAptitud( self.validar(cromosoma) ) ) #Almacena la funcion de aptitud calculada para... ya saben
+			@temperatura = @temperatura/(1+@beta*(@temperatura/@temperaturaInicial))
 			puts if @debug #Salto de linea
+			puts "Temperatura = #{@temperatura}" if @debug
 			break if cromosomasInicialesCount==0 #Si ya se termino la generacion que habia inicialmente, finaliza
 		end
 	end
 	
-	def printGeneracion
+	def printGeneracion(debug = false)
+		@debug = debug
 		soluciones = Array.new()
-		puts "Aptitud de toda la generacion:"
+		puts "Aptitud de toda la generacion:" if @debug
 		self.each do |cromosoma|
-			puts "----------------"
-			cromosoma.printGenes
-			puts "Aptitud = " + cromosoma.getAptitud.to_s
-			if cromosoma.getAptitud == 0
+			puts "----------------" if @debug
+			cromosoma.printGenes if @debug
+			puts "Aptitud = " + cromosoma.getAptitud.to_s if @debug
+			if cromosoma.getAptitud == 1
 				soluciones.push(cromosoma)
 			end
 		end
@@ -87,8 +100,8 @@ class AlgoritmoGenetico < Array #La clase extiende de un Array
 	end
 end
 
-a = AlgoritmoGenetico.new(100,6,true) #La tercera variable permite ver en detalle el procedimiento
+a = AlgoritmoGenetico.new(5000,9,false) #La tercera variable permite ver en detalle el procedimiento
 a.generacionar
 a.printGeneracion
 puts puts puts
-a[0].cruzar(a[1]) #Ejemplo de cruce (Activar el debug)
+#a[0].cruzar(a[1]) #Ejemplo de cruce (Activar el debug)

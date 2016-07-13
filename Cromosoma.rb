@@ -100,11 +100,11 @@ class Cromosoma
 	end
 end
 
-cromosoma= Cromosoma.new(8, false)
-cromosoma.printGenes
-genes = [1,2,3,4,5,6,7,8]
-cromosoma.setGenes(genes)
-cromosoma.printGenes
+#cromosoma= Cromosoma.new(8, false)
+#cromosoma.printGenes
+#genes = [1,2,3,4,5,6,7,8]
+#cromosoma.setGenes(genes)
+#cromosoma.printGenes
 #expected = actual.mutar
 
 #puts actual.printGenes

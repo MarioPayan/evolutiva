@@ -7,10 +7,10 @@
 # Versión: 0.3
 # Licencia: GPL
 
-Dado /^que se necesita una se necesita un cromosoma y un algoritmo genetico, se crea un cromosoma de (.+?) filas y el algoritmo genetico.$/  do |filas|
+Dado /^que se necesita un cromosoma y un algoritmo genetico, se crea un cromosoma de (.+?) filas y el algoritmo genetico.$/  do |filas|
   @numGenes = filas.to_i
   @cromosoma = Cromosoma.new(@numGenes, true)
-  @algen =  AlgoritmoGenetico.new(0,@numGenes,true)
+  @algen =  AlgoritmoGenetico.new(0,@numGenes,true, 100)
 end
 
 
